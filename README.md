@@ -1,155 +1,85 @@
-# 이력서 기반 기술 면접 준비
+# Java 입출력 및 문자열 처리 도구
 
-## 1. 세션, 쿠키, 토큰의 특징과 차이점
+## BufferedReader
+### 정의
+- 문자 입력 스트림을 효율적으로 읽기 위한 클래스
+- 버퍼를 사용해 입력 성능 향상
 
-### 쿠키 (Cookie)
-- **정의**: 클라이언트(브라우저) 측에 저장되는 작은 데이터 파일
-- **주요 특징**:
-  - 서버가 클라이언트에 저장하도록 요청하는 문자열 데이터
-  - 크기 제한 (보통 4KB)
-  - 만료 기간 설정 가능
-  - HTTP 요청 시 자동으로 서버에 전송
-  - 보안에 취약할 수 있음
+### 주요 메서드
+```java
+BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+String line = br.readLine(); // 한 줄 읽기
+br.close(); // 사용 후 닫기
+```
 
-### 세션 (Session)
-- **정의**: 서버 측에 저장되는 사용자 정보
-- **주요 특징**:
-  - 세션 ID를 통해 사용자 식별
-  - 서버 메모리에 저장
-  - 일정 시간 후 만료
-  - 서버 리소스 사용
-  - 쿠키보다 보안성 높음
-  - 서버 확장 시 세션 동기화 필요
+### 특징
+- 대량의 문자 데이터 읽기에 최적화
+- 입력 속도가 빠름
+- System.in과 함께 콘솔 입력에 자주 사용
 
-### 토큰 (Token, 특히 JWT)
-- **정의**: 인증 정보를 담은 암호화된 문자열
-- **주요 특징**:
-  - 클라이언트 측에 저장
-  - 자체적으로 정보를 포함 (페이로드)
-  - 디지털 서명으로 변조 방지
-  - 서버 부하 감소
-  - 상태 비저장(Stateless) 인증 방식
-  - 만료 시간 내장 가능
-  - 여러 서비스 간 공유 용이
+## StringTokenizer
+### 정의
+- 문자열을 구분자(delimiter)를 기준으로 분리하는 클래스
 
-### 주요 차이점 비교
+### 주요 메서드
+```java
+StringTokenizer st = new StringTokenizer("1 2 3 4", " ");
+while (st.hasMoreTokens()) {
+    int num = Integer.parseInt(st.nextToken());
+}
+```
 
-| 구분 | 쿠키 | 세션 | 토큰 |
-|------|------|------|------|
-| **저장 위치** | 클라이언트 | 서버 | 클라이언트 (검증은 서버) |
-| **보안성** | 낮음 | 높음 | 중간 |
-| **확장성** | 낮음 | 중간 | 높음 |
+### 특징
+- 문자열을 쉽게 분리
+- 기본 구분자는 공백
+- 다른 구분자 지정 가능
+- split()보다 성능이 조금 더 좋음
 
-### 선택 시 고려사항
-- 각 방식은 고유의 장단점이 있음
-- 프로젝트의 특성과 요구사항에 맞게 선택 필요
-- 보안, 성능, 확장성 등을 종합적으로 고려
+## StringBuilder
+### 정의
+- 문자열을 효율적으로 조작하고 생성하기 위한 가변 문자열 클래스
 
-**💡 Tip**: 실제 프로젝트에서는 종종 이러한 방식들을 복합적으로 사용하기도 합니다.
+### 주요 메서드
+```java
+StringBuilder sb = new StringBuilder();
+sb.append("Hello"); // 문자열 추가
+sb.append(" ");
+sb.append("World");
+String result = sb.toString(); // 최종 문자열로 변환
+```
 
-<br>
+### 특징
+- 문자열 연산 시 메모리 효율적
+- 문자열 수정이 잦은 경우 사용
+- String보다 성능 우수
+- 스레드 세이프하지 않음 (멀티스레드 환경 주의)
 
-## 2. HTTP vs HTTPS: 웹 통신 프로토콜 비교
+## 코딩 테스트에서의 활용 예시
+```java
+import java.io.*;
+import java.util.StringTokenizer;
 
-### HTTP (Hypertext Transfer Protocol)
-#### 기본 특징
-- **정의**: 웹 브라우저와 웹 서버 간 데이터 통신을 위한 기본 프로토콜
-- **포트**: 기본적으로 80번 포트 사용
-- **데이터 전송 방식**: 평문(암호화되지 않은) 텍스트로 데이터 전송
-
-#### 주요 특징
-- 데이터가 암호화되지 않음
-- 데이터 가로채기 쉬움
-- 정보 노출에 취약
-- 가벼운 통신 방식
-- 빠른 데이터 전송
-
-### HTTPS (Hypertext Transfer Protocol Secure)
-#### 기본 특징
-- **정의**: HTTP에 보안 계층(SSL/TLS)을 추가한 프로토콜
-- **포트**: 기본적으로 443번 포트 사용
-- **데이터 전송 방식**: 암호화된 데이터 전송
-
-#### 주요 특징
-- 데이터 암호화 
-- 정보 보호 및 데이터 무결성 보장
-- 서버 인증 기능
-- 중간자 공격 방지
-- SSL/TLS 인증서 필요
-
-### 주요 차이점
-
-| 구분 | HTTP | HTTPS |
-|------|------|-------|
-| **보안** | 낮음 | 높음 |
-| **데이터 암호화** | 없음 | 있음 |
-| **속도** | 빠름 | 상대적으로 느림 |
-| **SEO 랭킹** | 불리 | 유리 |
-| **인증서** | 불필요 | 필요 |
-
-### HTTPS 암호화 과정
-1. 클라이언트가 서버에 접속
-2. 서버의 공개키가 포함된 SSL 인증서 전달
-3. 클라이언트는 대칭키 생성 및 공개키로 암호화
-4. 서버는 개인키로 대칭키 복호화
-5. 이후 대칭키로 데이터 암호화 통신
-
-### 보안 취약점 비교
-- **HTTP**: 패킷 감청, 데이터 변조 쉬움
-- **HTTPS**: 암호화로 대부분의 공격 차단
-
-### 현대 웹 트렌드
-- 대부분의 웹사이트 HTTPS 전환
-- 구글, 브라우저들의 보안 강화 정책
-- Let's Encrypt 등 무료 SSL 인증서 서비스 등장
-
-**💡 Tip**: 개인정보, 로그인, 결제 등 민감한 데이터는 반드시 HTTPS 사용 권장
-
-<br>
-
-## 3. API와 RESTful API 이해하기
-
-### API (Application Programming Interface)
-#### 기본 개념
-- **정의**: 서로 다른 소프트웨어 시스템이 통신하기 위한 규약
-- **목적**: 애플리케이션 간 데이터 교환 및 기능 공유
-
-#### 주요 특징
-- 애플리케이션 간 상호작용 가능
-- 표준화된 통신 방식 제공
-- 복잡한 시스템 연결 단순화
-
-### RESTful API
-#### REST (Representational State Transfer) 원칙
-- **정의**: HTTP 기반 데이터 통신을 위한 아키텍처 스타일
-- **핵심 원칙**:
-  1. 클라이언트-서버 분리
-  2. 무상태성(Stateless)
-  3. 캐시 가능
-  4. 계층화된 시스템
-  5. 일관된 인터페이스
-
-#### RESTful API 특징
-- HTTP 메서드 사용
-  - `GET`: 리소스 조회
-  - `POST`: 리소스 생성
-  - `PUT`: 리소스 전체 수정
-  - `PATCH`: 리소스 부분 수정
-  - `DELETE`: 리소스 삭제
-
-#### 주요 구성 요소
-- **엔드포인트(Endpoint)**: 특정 리소스에 접근하는 URL
-- **HTTP 메서드**: 수행할 작업 정의
-- **헤더(Header)**: 요청/응답에 대한 추가 정보
-- **본문(Body)**: 데이터 전송
-
-### API vs RESTful API
-
-| 구분 | API | RESTful API |
-|------|-----|-------------|
-| **통신 방식** | 다양함 | HTTP 기반 |
-| **상태 유지** | 선택적 | 무상태 |
-| **표준화** | 낮음 | 높음 |
-| **확장성** | 제한적 | 우수 |
-
-<br>
+public class Main {
+    public static void main(String[] args) throws IOException {
+        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+        StringBuilder sb = new StringBuilder();
+        
+        // 입력 받기
+        int n = Integer.parseInt(br.readLine());
+        
+        // 문자열 토큰화
+        StringTokenizer st = new StringTokenizer(br.readLine());
+        
+        // 결과 빌더에 저장
+        for (int i = 0; i < n; i++) {
+            int num = Integer.parseInt(st.nextToken());
+            sb.append(num * 2).append(" ");
+        }
+        
+        // 최종 출력
+        System.out.println(sb.toString());
+        
+        br.close();
+    }
+}
+```
